@@ -1,0 +1,41 @@
+{
+  "name": "heku-node",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "graphql-codegen": "graphql-codegen",
+    "codegen": "graphql-codegen --config codegen.yml"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/monisnap-jason/unicorn-says-hello-world.git"
+  },
+  "keywords": [],
+  "author": "Adigium",
+  "license": "MIT",
+  "dependencies": {
+    "@apollo/client": "^3.5.10",
+    "@types/react": "^17.0.40",
+    "graphql": "^16.3.0",
+    "react": "^17.0.2",
+    "web3": "^1.7.1"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "2.6.2",
+    "@graphql-codegen/typescript": "2.4.7",
+    "@graphql-codegen/typescript-resolvers": "2.5.4",
+    "@graphql-codegen/typescript-react-apollo": "3.2.10",
+    "@graphql-codegen/typescript-stencil-apollo": "2.2.7",
+    "@graphql-codegen/typescript-operations": "2.3.4",
+    "@graphql-codegen/typescript-apollo-angular": "3.4.4",
+    "@graphql-codegen/introspection": "2.1.1"
+  }
+}
