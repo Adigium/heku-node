@@ -3,7 +3,11 @@ import { GRAPHQL_BASE_URL } from "./config";
 import Payments from "./payments";
 import Products from "./products";
 import Prices from "./prices";
+import Assets from "./assets";
+import Blockchains from "./blockchains";
+import Utils from "./utils";
 import Web3 from "web3";
+import fetch from "cross-fetch";
 
 export class HekuCore {
 
@@ -11,6 +15,9 @@ export class HekuCore {
   public payments: Payments
   public products: Products
   public prices: Prices
+  public assets: Assets
+  public blockchains: Blockchains
+  public utils = Utils
 
   constructor(token: String) {
     this.apolloClient = new ApolloClient({
@@ -19,6 +26,7 @@ export class HekuCore {
           headers: {
             Authorization: token,
           },
+          fetch: fetch
         }),
       cache: new InMemoryCache(),
       connectToDevTools: true,
@@ -27,6 +35,8 @@ export class HekuCore {
     this.payments = new Payments(this.apolloClient)
     this.products = new Products(this.apolloClient)
     this.prices = new Prices(this.apolloClient)
+    this.assets = new Assets(this.apolloClient)
+    this.blockchains = new Blockchains(this.apolloClient)
   }
 }
 

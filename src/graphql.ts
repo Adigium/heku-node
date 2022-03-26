@@ -148,9 +148,6 @@ export const GET_PRODUCT = gql`
       isActive
       createdAt
 
-      payments {
-        id
-      }
       prices {
         id
       }
@@ -172,9 +169,6 @@ export const GET_PRODUCTS = gql`
       isActive
       createdAt
 
-      payments {
-        id
-      }
       prices {
         id
       }
@@ -186,7 +180,7 @@ export const GET_PRODUCTS = gql`
 
 
 /*******************************************************************************************************************************
- *  PRODUCTS     
+ *  PRICES     
  * 
  *******************************************************************************************************************************/
 
@@ -256,3 +250,123 @@ export const GET_PRICES = gql`
   }
 `
 
+
+/*******************************************************************************************************************************
+ *  ASSETS     
+ * 
+ *******************************************************************************************************************************/
+
+export const GET_ASSETS = gql`
+  query GetAssets {
+    assets {
+      id
+      name
+      imageUrl
+      symbol
+      blockchain {
+        id
+      }
+      decimals
+      isCoin
+      address
+      protocol {
+        id
+      }
+      metadata
+      coinMarketCap
+    }
+  }
+`
+
+export const GET_ASSET = gql`
+  query GetAsset($id: ID!) {
+    asset(id: $id) {
+      id
+      name
+      symbol
+      imageUrl
+      blockchain {
+        id
+      }
+      decimals
+      isCoin
+      address
+      protocol {
+        id
+      }
+      metadata
+      coinMarketCap
+    }
+  }
+`
+
+
+/*******************************************************************************************************************************
+ *  BLOCKCHAINS     
+ * 
+ *******************************************************************************************************************************/
+
+export const GET_BLOCKCHAINS = gql`
+  query GetBlockchains {
+    blockchains {
+      id
+      name
+      metadata
+      rpc
+      chainId
+      isTestnet
+
+      coin {
+        id
+      }
+      assets {
+        id
+      }
+      protocols {
+        id
+      }
+    }
+  }
+`
+
+export const GET_BLOCKCHAIN = gql`
+  query GetBlockchain($id: ID!) {
+    blockchain(id: $id) {
+      id
+      name
+      metadata
+      rpc
+      chainId
+      isTestnet
+
+      coin {
+        id
+      }
+      assets {
+        id
+      }
+      protocols {
+        id
+      }
+    }
+  }
+`
+
+
+/*******************************************************************************************************************************
+ *  UTILS     
+ * 
+ *******************************************************************************************************************************/
+
+
+export const CONVERT_FROM_ASSET = gql`
+  query ConvertFromAsset($asset: ID!, $amount: String!, $currency: String) {
+    convertFromAsset(asset: $asset, amount: $amount, currency: $currency)
+  }
+`
+
+export const CONVERT_TO_ASSET = gql`
+  query ConvertToAsset($asset: ID!, $amount: String!, $currency: String) {
+    convertToAsset(asset: $asset, amount: $amount, currency: $currency)
+  }
+`

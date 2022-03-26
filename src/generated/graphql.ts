@@ -39,9 +39,12 @@ export type Asset = {
   __typename?: 'Asset';
   address?: Maybe<Scalars['String']>;
   balance?: Maybe<Scalars['String']>;
+  balanceConvert: Array<Maybe<Scalars['String']>>;
   blockchain: Blockchain;
+  coinMarketCap?: Maybe<Scalars['Int']>;
   decimals: Scalars['Int'];
   id: Scalars['ID'];
+  imageUrl: Scalars['String'];
   isCoin: Scalars['Boolean'];
   metadata?: Maybe<Scalars['JSON']>;
   name: Scalars['String'];
@@ -49,14 +52,22 @@ export type Asset = {
   symbol: Scalars['String'];
 };
 
+
+export type AssetBalanceConvertArgs = {
+  currency?: InputMaybe<Scalars['String']>;
+};
+
 export type Blockchain = {
   __typename?: 'Blockchain';
   assets?: Maybe<Array<Maybe<Asset>>>;
+  chainId?: Maybe<Scalars['Int']>;
   coin: Asset;
   id: Scalars['ID'];
+  isTestnet?: Maybe<Scalars['Boolean']>;
   metadata?: Maybe<Scalars['JSON']>;
   name: Scalars['String'];
   protocols?: Maybe<Array<Maybe<Protocol>>>;
+  rpc?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -168,6 +179,7 @@ export type Price = {
   __typename?: 'Price';
   amount?: Maybe<Scalars['String']>;
   asset: Asset;
+  createdAt?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   payments?: Maybe<Array<Maybe<Payment>>>;
   product: Product;
@@ -189,7 +201,6 @@ export type Product = {
   isActive: Scalars['Boolean'];
   metadata?: Maybe<Scalars['JSON']>;
   name: Scalars['String'];
-  payments?: Maybe<Array<Payment>>;
   prices?: Maybe<Array<Price>>;
 };
 
@@ -217,6 +228,8 @@ export type Query = {
   assets?: Maybe<Array<Asset>>;
   blockchain?: Maybe<Blockchain>;
   blockchains?: Maybe<Array<Blockchain>>;
+  convertFromAsset?: Maybe<Scalars['String']>;
+  convertToAsset?: Maybe<Scalars['String']>;
   payment?: Maybe<Payment>;
   payments?: Maybe<Array<Payment>>;
   price?: Maybe<Price>;
@@ -258,6 +271,20 @@ export type QueryBlockchainArgs = {
 };
 
 
+export type QueryConvertFromAssetArgs = {
+  amount: Scalars['String'];
+  asset: Scalars['ID'];
+  currency?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryConvertToAssetArgs = {
+  amount: Scalars['String'];
+  asset: Scalars['ID'];
+  currency?: InputMaybe<Scalars['String']>;
+};
+
+
 export type QueryPaymentArgs = {
   id: Scalars['ID'];
 };
@@ -265,6 +292,8 @@ export type QueryPaymentArgs = {
 
 export type QueryPaymentsArgs = {
   asset?: InputMaybe<Scalars['String']>;
+  endAt?: InputMaybe<Scalars['String']>;
+  startAt?: InputMaybe<Scalars['String']>;
   status?: InputMaybe<PaymentStatus>;
   transaction?: InputMaybe<Scalars['String']>;
 };
@@ -372,12 +401,12 @@ export type GetProductQueryVariables = Exact<{
 }>;
 
 
-export type GetProductQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, name: string, description?: string | null, metadata?: any | null, isActive: boolean, createdAt?: string | null, payments?: Array<{ __typename?: 'Payment', id: string }> | null, prices?: Array<{ __typename?: 'Price', id: string }> | null } | null };
+export type GetProductQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, name: string, description?: string | null, metadata?: any | null, isActive: boolean, createdAt?: string | null, prices?: Array<{ __typename?: 'Price', id: string }> | null } | null };
 
 export type GetProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProductsQuery = { __typename?: 'Query', products?: Array<{ __typename?: 'Product', id: string, name: string, description?: string | null, metadata?: any | null, isActive: boolean, createdAt?: string | null, payments?: Array<{ __typename?: 'Payment', id: string }> | null, prices?: Array<{ __typename?: 'Price', id: string }> | null }> | null };
+export type GetProductsQuery = { __typename?: 'Query', products?: Array<{ __typename?: 'Product', id: string, name: string, description?: string | null, metadata?: any | null, isActive: boolean, createdAt?: string | null, prices?: Array<{ __typename?: 'Price', id: string }> | null }> | null };
 
 export type CreatePriceMutationVariables = Exact<{
   productId: Scalars['ID'];
@@ -408,6 +437,48 @@ export type GetPricesQueryVariables = Exact<{
 
 
 export type GetPricesQuery = { __typename?: 'Query', prices?: Array<{ __typename?: 'Price', id: string, amount?: string | null, asset: { __typename?: 'Asset', id: string }, product: { __typename?: 'Product', id: string }, payments?: Array<{ __typename?: 'Payment', id: string } | null> | null }> | null };
+
+export type GetAssetsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAssetsQuery = { __typename?: 'Query', assets?: Array<{ __typename?: 'Asset', id: string, name: string, imageUrl: string, symbol: string, decimals: number, isCoin: boolean, address?: string | null, metadata?: any | null, coinMarketCap?: number | null, blockchain: { __typename?: 'Blockchain', id: string }, protocol?: { __typename?: 'Protocol', id: string } | null }> | null };
+
+export type GetAssetQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetAssetQuery = { __typename?: 'Query', asset?: { __typename?: 'Asset', id: string, name: string, symbol: string, imageUrl: string, decimals: number, isCoin: boolean, address?: string | null, metadata?: any | null, coinMarketCap?: number | null, blockchain: { __typename?: 'Blockchain', id: string }, protocol?: { __typename?: 'Protocol', id: string } | null } | null };
+
+export type GetBlockchainsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetBlockchainsQuery = { __typename?: 'Query', blockchains?: Array<{ __typename?: 'Blockchain', id: string, name: string, metadata?: any | null, rpc?: string | null, chainId?: number | null, isTestnet?: boolean | null, coin: { __typename?: 'Asset', id: string }, assets?: Array<{ __typename?: 'Asset', id: string } | null> | null, protocols?: Array<{ __typename?: 'Protocol', id: string } | null> | null }> | null };
+
+export type GetBlockchainQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetBlockchainQuery = { __typename?: 'Query', blockchain?: { __typename?: 'Blockchain', id: string, name: string, metadata?: any | null, rpc?: string | null, chainId?: number | null, isTestnet?: boolean | null, coin: { __typename?: 'Asset', id: string }, assets?: Array<{ __typename?: 'Asset', id: string } | null> | null, protocols?: Array<{ __typename?: 'Protocol', id: string } | null> | null } | null };
+
+export type ConvertFromAssetQueryVariables = Exact<{
+  asset: Scalars['ID'];
+  amount: Scalars['String'];
+  currency?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ConvertFromAssetQuery = { __typename?: 'Query', convertFromAsset?: string | null };
+
+export type ConvertToAssetQueryVariables = Exact<{
+  asset: Scalars['ID'];
+  amount: Scalars['String'];
+  currency?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ConvertToAssetQuery = { __typename?: 'Query', convertToAsset?: string | null };
 
 
 
@@ -565,9 +636,12 @@ export type AccountSessionResolvers<ContextType = any, ParentType extends Resolv
 export type AssetResolvers<ContextType = any, ParentType extends ResolversParentTypes['Asset'] = ResolversParentTypes['Asset']> = {
   address?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   balance?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  balanceConvert?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType, Partial<AssetBalanceConvertArgs>>;
   blockchain?: Resolver<ResolversTypes['Blockchain'], ParentType, ContextType>;
+  coinMarketCap?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isCoin?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   metadata?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -578,11 +652,14 @@ export type AssetResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type BlockchainResolvers<ContextType = any, ParentType extends ResolversParentTypes['Blockchain'] = ResolversParentTypes['Blockchain']> = {
   assets?: Resolver<Maybe<Array<Maybe<ResolversTypes['Asset']>>>, ParentType, ContextType>;
+  chainId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   coin?: Resolver<ResolversTypes['Asset'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isTestnet?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   metadata?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   protocols?: Resolver<Maybe<Array<Maybe<ResolversTypes['Protocol']>>>, ParentType, ContextType>;
+  rpc?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -633,6 +710,7 @@ export type PaymentItemResolvers<ContextType = any, ParentType extends Resolvers
 export type PriceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Price'] = ResolversParentTypes['Price']> = {
   amount?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   asset?: Resolver<ResolversTypes['Asset'], ParentType, ContextType>;
+  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   payments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Payment']>>>, ParentType, ContextType>;
   product?: Resolver<ResolversTypes['Product'], ParentType, ContextType>;
@@ -647,7 +725,6 @@ export type ProductResolvers<ContextType = any, ParentType extends ResolversPare
   isActive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   metadata?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  payments?: Resolver<Maybe<Array<ResolversTypes['Payment']>>, ParentType, ContextType>;
   prices?: Resolver<Maybe<Array<ResolversTypes['Price']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -669,6 +746,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   assets?: Resolver<Maybe<Array<ResolversTypes['Asset']>>, ParentType, ContextType, Partial<QueryAssetsArgs>>;
   blockchain?: Resolver<Maybe<ResolversTypes['Blockchain']>, ParentType, ContextType, RequireFields<QueryBlockchainArgs, 'id'>>;
   blockchains?: Resolver<Maybe<Array<ResolversTypes['Blockchain']>>, ParentType, ContextType>;
+  convertFromAsset?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<QueryConvertFromAssetArgs, 'amount' | 'asset'>>;
+  convertToAsset?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<QueryConvertToAssetArgs, 'amount' | 'asset'>>;
   payment?: Resolver<Maybe<ResolversTypes['Payment']>, ParentType, ContextType, RequireFields<QueryPaymentArgs, 'id'>>;
   payments?: Resolver<Maybe<Array<ResolversTypes['Payment']>>, ParentType, ContextType, Partial<QueryPaymentsArgs>>;
   price?: Resolver<Maybe<ResolversTypes['Price']>, ParentType, ContextType, RequireFields<QueryPriceArgs, 'id'>>;
